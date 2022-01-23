@@ -1,0 +1,2 @@
+
+export const DEFAULT_CONNECTION_URL = '192.168.100.24:8080';

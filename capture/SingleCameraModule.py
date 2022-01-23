@@ -1,46 +1,63 @@
 import cv2
-import time
+from warnings import warn
+from camutils.CamutilsModule import get_path_of_recoding
 
 
 class SingleCamera:
-    def __init__(self, channel=0, record=False):
-        self.cap = cv2.VideoCapture(channel, cv2.CAP_DSHOW)
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 719)
-        self.frame_width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        self.frame_height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        self.record = record
+    ERROR_TOLERANCE = 10
+
+    def __init__(self, channel, requested_resolution=(1280, 720), record=False, session_name=""):
+        cap = cv2.VideoCapture(channel, cv2.CAP_DSHOW)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, requested_resolution[0])
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, requested_resolution[1])
+        given_resolution = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(
+            cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+
+        self.cap = cap
         self.channel = channel
-        print(self.frame_width, self.frame_height)
+        self.errors = 0
 
-        if record == True:
-            self.out = cv2.VideoWriter(
-                '../recordings/recording_' + str(int(time.time() * 1000)) + '_ch_' + str(channel) + '.avi',
-                cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
-                10,
-                (self.frame_width, self.frame_height)
-            )
-
-            if (self.out.isOpened() == False):
-                raise Exception('Unable to record camera feed')
-
-        if (self.cap.isOpened() == False):
+        if (cap.isOpened() == False):
             raise Exception('Unable to read camera feed')
 
-    def getFrames(self):
+        if requested_resolution != given_resolution:
+            print('Requested resolution: ' + str(requested_resolution) +
+                  '\nGiven resolution: ' + str(given_resolution))
+
+        if record == True:
+            outputPath = get_path_of_recoding(session_name, channel)
+            outputFormat = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
+
+            out = cv2.VideoWriter(
+                outputPath, outputFormat, 8, given_resolution)
+
+            if (out.isOpened() == False):
+                warn('Unable to record camera feed')
+
+            self.out = out
+
+    def getFrame(self):
         success, frame = self.cap.read()
 
         if success == True:
-            if self.record == True:
+            if self.__isRecording():
                 self.out.write(frame)
 
-            return [frame]
-        else:
+            self.errors = 0
+
+            return frame
+
+        elif self.errors >= SingleCamera.ERROR_TOLERANCE:
             raise Exception(
                 'Frame cannot be requested from camera: ' + str(self.channel))
 
+        else:
+            self.errors += 1
+
+    def __isRecording(self):
+        return hasattr(self, 'out')
+
     def __del__(self):
-        # self.cap.release()
-        # if self.record == True:
-        #     self.out.release()
-        pass
+        self.cap.release()
+        if self.__isRecording():
+            self.out.release()

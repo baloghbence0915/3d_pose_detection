@@ -1,0 +1,6 @@
+__pycache__
+*.avi
+*.png
+*.jpg
+*.xlsx
+node_modules

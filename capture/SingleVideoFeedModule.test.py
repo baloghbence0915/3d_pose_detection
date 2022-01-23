@@ -1,18 +1,18 @@
 import cv2
 from SingleVideoFeedModule import SingleVideoFeed
+from os.path import join
 
-cam = SingleVideoFeed('recordings/recording_1641928970890_ch_0.avi')
+cam = SingleVideoFeed(join('..', 'recordings', 'recording_1642535760245_ch_1.avi'))
 prevFrame = None
 while(True):
-    frames = cam.getFrames()
-    frame = frames[0]
+    frame = cam.getFrame()
 
     if frame is None:
         frame = prevFrame
 
     cv2.imshow('frame', frame)
 
-    if cv2.waitKey(100) & 0xFF == ord('q'):
+    if cv2.waitKey(50) & 0xFF == ord('q'):
         break
 
     prevFrame = frame

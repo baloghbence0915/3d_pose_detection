@@ -1,8 +1,9 @@
 import cv2
 from StereoVideoFeedModule import StereoVideoFeed
+from os.path import join
 
-cams = StereoVideoFeed(['recordings/recording_1641929909858_ch_0.avi',
-                       'recordings/recording_1641929909928_ch_1.avi'])
+cams = StereoVideoFeed([join('..', 'recordings', 'recording_1641929909858_ch_0.avi'),
+                        join('..', 'recordings', 'recording_1641929909928_ch_1.avi')])
 
 prevFrames = [None, None]
 

@@ -1,0 +1,99 @@
+1. MTC 2. NH 3.-MTC
+1. AG 2. MTC 3. NH 4.-MTC
+1. MTC 2. NH
+1. MTC 2. NH 3.-MTC 4. OFF
+1. AG 2. MTC 3. NH	
+1. AG 2. MTC 3. NH 4.-MTC 5. OFF
+1. AG 2. MTC 3. NH 4.-MTC
+1. AG 2. MTC
+1. AG 2. OFF
+1. AG 2. MTC 3. NH	
+1. AG 2. MTC 3. NH 4.-MTC 5. OFF
+1. MTC 2. NH
+1. AG 2. MTC
+1. AG 2. MTC 3. NH	
+1. MTC 2. NH 3.-MTC 4. OFF
+1. AG 2. OFF
+1. AG 2. MTC 3. NH 4.-MTC 5. OFF	
+1. MTC 2. NH 3.-MTC
+1. AG
+1. MTC
+1. OFF
+
+----
+
+[
+"1. MTC 2. NH 3.-MTC",
+"1. AG 2. MTC 3. NH 4.-MTC",
+"1. MTC 2. NH",
+"1. MTC 2. NH 3.-MTC 4. OFF",
+"1. AG 2. MTC 3. NH	",
+"1. AG 2. MTC 3. NH 4.-MTC 5. OFF",
+"1. AG 2. MTC 3. NH 4.-MTC",
+"1. AG 2. MTC",
+"1. AG 2. OFF",
+"1. AG 2. MTC 3. NH",
+"1. AG 2. MTC 3. NH 4.-MTC 5. OFF",
+"1. MTC 2. NH",
+"1. AG 2. MTC",
+"1. AG 2. MTC 3. NH",
+"1. MTC 2. NH 3.-MTC 4. OFF",
+"1. AG 2. OFF",
+"1. AG 2. MTC 3. NH 4.-MTC 5. OFF",	
+"1. MTC 2. NH 3.-MTC",
+"1. AG",
+"1. MTC",
+"1. OFF"
+]
+
+----
+
+["1. MTC 2. NH 3.-MTC","1. AG 2. MTC 3. NH 4.-MTC","1. MTC 2. NH","1. MTC 2. NH 3.-MTC 4. OFF","1. AG 2. MTC 3. NH\\t","1. AG 2. MTC 3. NH 4.-MTC 5. OFF","1. AG 2. MTC","1. AG 2. OFF","1. AG 2. MTC 3. NH","1. AG","1. MTC","1. OFF"]
+
+----
+
+		1. MTC	2. NH	3.-MTC
+1. AG 	2. MTC	3. NH	4.-MTC
+		1. MTC	2. NH
+		1. MTC	2. NH	3.-MTC 4. OFF
+1. AG 	2. MTC	3. NH
+1. AG	2. MTC	3. NH	4.-MTC 5. OFF
+1. AG	2. MTC
+1. AG	2. OFF
+1. AG
+1. MTC
+1. OFF
+
+----
+
+(NH)				1. MTC	2. NH	3.-MTC
+(AG,NH)		1. AG 	2. MTC	3. NH	4.-MTC
+(MTC,NH)			1. MTC	2. NH
+(NH,OFF)			1. MTC	2. NH	3.-MTC 4. OFF
+(AG,MTC,NH)	1. AG 	2. MTC	3. NH
+(AG,NH,OFF)	1. AG	2. MTC	3. NH	4.-MTC 5. OFF
+(AG,MTC)	1. AG	2. MTC
+(AG,OFF)	1. AG	2. OFF
+(AG)		1. AG
+(MTC)		1. MTC
+(OFF)		1. OFF
+
+----
+
+(AG)		1. AG
+(MTC)		1. MTC
+(OFF)		1. OFF
+(NH)				1. MTC	2. NH	3.-MTC
+(AG,MTC)	1. AG	2. MTC
+(AG,OFF)	1. AG	2. OFF
+(AG,NH)		1. AG 	2. MTC	3. NH	4.-MTC
+(MTC,NH)			1. MTC	2. NH
+(NH,OFF)			1. MTC	2. NH	3.-MTC 4. OFF
+(AG,MTC,NH)	1. AG 	2. MTC	3. NH
+(AG,NH,OFF)	1. AG	2. MTC	3. NH	4.-MTC 5. OFF
+
+
+
+
+
+
