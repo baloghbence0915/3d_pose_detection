@@ -288,7 +288,7 @@ export const appReducer: Reducer<State, Actions> = (state, action) => {
                 ...state,
                 renderOptions: {
                     ...state.renderOptions,
-                    lines: action.payload
+                    showLines: action.payload
                 }
             };
         }
@@ -297,7 +297,7 @@ export const appReducer: Reducer<State, Actions> = (state, action) => {
                 ...state,
                 renderOptions: {
                     ...state.renderOptions,
-                    spheres: action.payload
+                    showSpheres: action.payload
                 }
             };
         }
@@ -316,6 +316,27 @@ export const appReducer: Reducer<State, Actions> = (state, action) => {
                 renderOptions: {
                     ...state.renderOptions,
                     showAxes: !state.renderOptions.showAxes
+                }
+            };
+        }
+        case 'toggleOrtographicCamera': {
+            return {
+                ...state,
+                renderOptions: {
+                    ...state.renderOptions,
+                    ortographic: !state.renderOptions.ortographic
+                }
+            };
+        }
+        case 'toggleShowSideBySide': {
+            return {
+                ...state,
+                config: {
+                    ...state.config,
+                    debug: {
+                        ...state.config.debug,
+                        show_points_per_side: !state.config.debug.show_points_per_side
+                    }
                 }
             };
         }

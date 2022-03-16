@@ -9,27 +9,29 @@ export interface BodyParts {
 export interface State {
     config: Config;
     renderOptions: {
-        lines: BodyParts;
-        spheres: BodyParts;
+        showLines: BodyParts;
+        showSpheres: BodyParts;
         showBox: boolean;
         showAxes: boolean;
+        ortographic: boolean;
     }
 }
 
 export const INITIAL_STATE: State = {
     config: DEFAULT_CONFIG,
     renderOptions: {
-        lines: {
+        showLines: {
             face: false,
             body: true,
             limbs: false
         },
-        spheres: {
+        showSpheres: {
             face: false,
             body: true,
             limbs: false
         },
         showAxes: true,
-        showBox: true
+        showBox: true,
+        ortographic: false
     }
 };

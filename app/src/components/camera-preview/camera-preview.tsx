@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { useIsConnected } from '../../hooks/use-is-connected';
-import { NOT_FOUND_PIC } from '../../not-found-pic';
 import { ConnectionService } from '../../services/connection';
 import { StatsService } from '../../services/stats.service';
 import { Frame, Frames } from '../../types/frames';
@@ -38,7 +37,7 @@ export default function CameraPreview() {
         }
 
         return <div className="camera-preview-container">
-            <span className="camera-resolution">{frame?.res?.[0]}x{frame?.res?.[1]}</span>
+            {frame?.res && <span className="camera-resolution">{frame.res[0]}x{frame.res[1]}</span>}
             <img alt="frame" src={frame?.frame} />
         </div>;
     };

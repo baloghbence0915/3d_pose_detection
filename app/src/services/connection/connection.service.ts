@@ -4,6 +4,7 @@ import { NOT_FOUND_PIC } from '../../not-found-pic';
 import { BehaviorSubject } from 'rxjs';
 import { DEFAULT_CONNECTION_URL } from './url';
 import { Frames } from '../../types/frames';
+import { Points } from '../../types/points';
 
 export class ConnectionService {
     private static instance: ConnectionService;
@@ -44,7 +45,7 @@ export class ConnectionService {
         return response.json()
     }
 
-    public async getRecordings() {
+    public async getRecordings(): Promise<string[]> {
         const response = await this.fetch('/api/recordings');
         return response.json()
     }
@@ -75,6 +76,11 @@ export class ConnectionService {
             left: { frame: this.getImageBase64(obj?.left?.frame), res: obj?.left?.res },
             right: { frame: this.getImageBase64(obj?.right?.frame), res: obj?.right?.res }
         };
+    }
+
+    public async getPoints(): Promise<Points> {
+        const response = await this.fetch(`/api/points`).then(r => r.json());
+        return response;
     }
 
     private async fetch(path: string, options: RequestInit = {}): Promise<Response> {

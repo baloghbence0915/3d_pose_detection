@@ -1,3 +1,5 @@
+import math
+
 from capture.StereoCameraModule import StereoCamera
 from capture.StereoVideoFeedModule import StereoVideoFeed
 from pose.PoseDetectionModule import PoseDetection
@@ -53,6 +55,9 @@ class App:
     def getKeyPoints(self):
         frames = self.__getFrames()
 
+        show_points_per_side = self.config.get(
+        )['debug']['show_points_per_side']
+
         calculations = self.config.get()['calculations']
         stereo_baseline = calculations["stereo_baseline"]
         horizontal_angle = calculations["horizontal_angle"]
@@ -66,25 +71,29 @@ class App:
         if move_points_to_center and offset['enabled']:
             raise 'Cannot move points to the center and set offset the same time!'
 
-        resp = dict({"left": None, "right": None, "middle": {}})
+        points = dict({"left": None, "right": None})
+        resp = dict({"points": {}})
+        ratio = 0
 
         for side, frame in frames.items():
             if frame is None:
                 continue
 
+            ratio = frame.shape[0] / frame.shape[1]
+
             (pose, _) = self.detectors[side].getPositions(frame)
 
             if pose.pose_landmarks is not None:
-                resp[side] = {id: dict({'x': l.x, 'y': 1-l.y})
-                              for id, l in enumerate(pose.pose_landmarks.landmark)}
+                points[side] = {id: dict({'x': l.x, 'y': (1-l.y)*ratio})
+                                for id, l in enumerate(pose.pose_landmarks.landmark)}
 
-        if resp['left'] is not None and resp['right'] is not None:
+        if points['left'] is not None and points['right'] is not None:
             # difference from X and Z axis
             diffX = 0
             diffZ = 0
             # 11 - left_shoulder ; 12 - right_shoulder
             for i in [11, 12]:
-                leftX, _, rightX, _ = unwrapCoords(resp, i)
+                leftX, _, rightX, _ = unwrapCoords(points, i)
                 diffX += (leftX + rightX)/2
                 diffZ += getDistanceOfPoint(leftX, rightX,
                                             horizontal_angle, stereo_baseline, stereo_scale)
@@ -101,13 +110,13 @@ class App:
                 normHeight = linearFn(
                     diffZ, normalize_height['slope'], normalize_height['bias'])
 
-
             for i in range(33):
-                leftX, leftY, rightX, rightY = unwrapCoords(resp, i)
+                leftX, leftY, rightX, rightY = unwrapCoords(points, i)
 
                 x = (leftX+rightX)/2
                 y = (leftY+rightY)/2
-                z = getDistanceOfPoint(leftX, rightX, horizontal_angle, stereo_baseline, stereo_scale)
+                z = getDistanceOfPoint(
+                    leftX, rightX, horizontal_angle, stereo_baseline, stereo_scale)
 
                 #
                 if align_ground['enabled']:
@@ -117,7 +126,7 @@ class App:
                 if move_points_to_center:
                     x -= diffX
                     z -= diffZ
-                
+
                 #
                 if normalize_height['enabled']:
                     if not move_points_to_center:
@@ -129,13 +138,21 @@ class App:
                     if not move_points_to_center:
                         x += diffX
                         z += diffZ
-                
+
                 #
                 if offset['enabled']:
                     x += offset['x']
                     z += offset['z']
 
-                resp["middle"][i] = {'x': x, 'y': y, 'z': z}
+                resp["points"][i] = {'x': -x, 'y': y, 'z': z}
+
+        resp['angle'] = self.__get_body_angle(resp['points'])
+
+        resp['debug'] = dict({'ratio': ratio})
+
+        if show_points_per_side:
+            resp['debug']['left'] = points['left']
+            resp['debug']['right'] = points['right']
 
         return resp
 
@@ -196,3 +213,14 @@ class App:
         show_landmarks = self.config.get()['debug']['show_landmarks']
         self.detectors = {"left": PoseDetection(
             show_landmarks), "right": PoseDetection(show_landmarks)}
+
+    def __get_body_angle(self, points):
+        if 11 in points and 12 in points:
+            left_shoulder = points[11]
+            right_shoulder = points[12]
+            x1 = right_shoulder['x'] - left_shoulder['x']
+            z1 = right_shoulder['z'] - left_shoulder['z']
+
+            return math.acos(x1 / math.sqrt(pow(x1, 2)+pow(z1, 2))) * (1 if z1 >= 0 else -1)
+
+        return 0

@@ -15,7 +15,7 @@ export default function ReplayingPanel() {
 
     useEffect(() => {
         if (isConnected && isReplaying) {
-            connectionService.getRecordings().then(r => setRecordings(r));
+            connectionService.getRecordings().then(r => !!r && setRecordings(r));
         }
     }, [isConnected, isReplaying]);
 

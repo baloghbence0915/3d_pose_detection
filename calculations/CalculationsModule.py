@@ -45,4 +45,4 @@ def getDistanceOfPoint(a, b, angle, baseline, scale):
 
 
 def linearFn(x, slope, bias):
-    return tan(radians(slope)) * x + bias
+    return (tan(radians(slope)) * x) + bias

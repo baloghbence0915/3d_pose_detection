@@ -1,0 +1,20 @@
+.config-panel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+
+    &.config {
+        position: absolute;
+        align-items: center;
+    }
+
+    &.threejs {
+        align-items: flex-end;
+    }
+
+    .config-panel-accordion {
+        width: 25%;
+    }
+}

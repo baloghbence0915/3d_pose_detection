@@ -13,6 +13,7 @@ import NormalizeHeightPanel from './components/normalize-height-panel';
 import MoveCenterPanel from './components/move-center-panel';
 import OffsetPanel from './components/offset-panel';
 import ThreePanel from './components/three-panel';
+import PointsDebugPanel from './components/points-debug-panel';
 
 interface ConfigPanelProps {
     mode: 'config' | 'threejs'
@@ -32,6 +33,9 @@ export default function ConfigPanel({ mode }: ConfigPanelProps) {
         </ConfigPanelAccordion>}
         {isConfigMode && <ConfigPanelAccordion title="Undistortion settings">
             <UndistortionPanel />
+        </ConfigPanelAccordion>}
+        {!isConfigMode && <ConfigPanelAccordion title="Debug settings">
+            <PointsDebugPanel />
         </ConfigPanelAccordion>}
         {!isConfigMode && <ConfigPanelAccordion title="Stereo settings">
             <StereoPanel />

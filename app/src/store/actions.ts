@@ -34,6 +34,8 @@ export const actions = {
     setRenderingSpheres: createAction<'setRenderingSpheres', BodyParts>('setRenderingSpheres'),
     toggleRenderingBox: createAction<'toggleRenderingBox', void>('toggleRenderingBox'),
     toggleRenderingAxes: createAction<'toggleRenderingAxes', void>('toggleRenderingAxes'),
+    toggleOrtographicCamera: createAction<'toggleOrtographicCamera', void>('toggleOrtographicCamera'),
+    toggleShowSideBySide: createAction<'toggleShowSideBySide', void>('toggleShowSideBySide'),
 }
 
 
@@ -62,4 +64,6 @@ export type Actions =
     ReturnType<typeof actions.setRenderingSpheres> |
     ReturnType<typeof actions.toggleRenderingBox> |
     ReturnType<typeof actions.toggleRenderingAxes> |
+    ReturnType<typeof actions.toggleOrtographicCamera> |
+    ReturnType<typeof actions.toggleShowSideBySide> |
     ReturnType<typeof actions.swapChannels>;

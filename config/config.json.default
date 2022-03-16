@@ -78,16 +78,16 @@
             "bias": 0
         },
         "offset": {
-            "enabled": false,
-            "x": 0,
-            "z": 0
+            "enabled": true,
+            "x": -0.5,
+            "z": -0.5
         }
     },
     "playback": {
         "recoding": false,
         "playing": {
             "enabled": true,
-            "file": "camera_20220310193401252522"
+            "file": "camera_20220312210945545424"
         }
     }
 }
