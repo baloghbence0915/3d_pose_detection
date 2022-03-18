@@ -7,7 +7,7 @@ import numpy as np
 class PoseDetection:
     def __init__(self, drawLandmarks=False):
         self.drawLandmarks = drawLandmarks
-        self.pose = pose.Pose()
+        self.pose = pose.Pose(model_complexity=1)
 
     def getPositions(self, frame):
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

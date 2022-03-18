@@ -10,30 +10,14 @@ from camutils.CamutilsModule import get_recordings
 
 camera = cv2.VideoCapture(0)
 
-def gen_frames():
-    while True:
-        success, frame = camera.read()
-        if not success:
-            break
-        else:
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n') 
-
 class APIServer(Router):
     app = App()
-
-    def GET_api_frame(self):
-        self.send_header("Content-type", "multipart/x-mixed-replace; boundary=frame")
-        self.end_headers()
-        self.wfile.write(next(gen_frames()))
 
     def GET_api_frames(self):
         self.send_header("Content-type", "application/bson")
         self.end_headers()
 
-        frames = APIServer.app.getFramesForPreview()
+        frames = APIServer.app.getFrames()
         response = dict({})
 
         for side, frame in frames.items():

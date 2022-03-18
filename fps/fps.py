@@ -1,3 +1,4 @@
+# https://pyimagesearch.com/2015/12/21/increasing-webcam-fps-with-python-and-opencv/
 # import the necessary packages
 import datetime
 class FPS:
@@ -10,6 +11,7 @@ class FPS:
 	def start(self):
 		# start the timer
 		self._start = datetime.datetime.now()
+		self._numFrames = 0
 		return self
 	def stop(self):
 		# stop the timer

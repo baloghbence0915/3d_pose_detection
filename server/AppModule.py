@@ -1,59 +1,69 @@
 import math
 
-from capture.StereoCameraModule import StereoCamera
-from capture.StereoVideoFeedModule import StereoVideoFeed
+from cv2 import undistort
+
+from capture.StereoVideoCameraModule import StereoVideoCamera
+from capture.StereoVideoPlayerModule import StereoVideoPlayer
 from pose.PoseDetectionModule import PoseDetection
 from config.ConfigModule import Config
 from calculations.CalculationsModule import getDistanceOfPoint, linearFn, get_body_angle, get_speed
 from calibration.CalibrationModule import Undistortion
 from camutils.CamutilsModule import rotate_image
 
+# leftX, leftY, rightX, rightY = unwrapCoords(points, i)
+
 
 def unwrapCoords(points, i):
     return points["left"][i]['x'], points["left"][i]['y'], points["right"][i]['x'], points["right"][i]['y']
 
-# leftX, leftY, rightX, rightY = unwrapCoords(points, i)
-
 
 class App:
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(App, cls).__new__(cls)
+            cls.instance.config = Config()
+            cls.instance.undistortion_module = Undistortion()
+            cls.instance.rotate_image_module = rotate_image
+            # cls.instance.leftFrame = None
+            # cls.instance.rightFrame = None
+            cls.instance.__update_cams()
 
-    def __init__(self):
-        self.cams = None
-        self.detectors = None
-        self.config = Config()
-        self.undistortion = Undistortion()
-        self.rotate_image = rotate_image
+        return cls.instance
 
-        if self.cams is None:
-            self.__update_cams()
+    def getLeftFrameProp(self):
+        return self.leftFrame
 
-    def getFramesForPreview(self):
-        frames = self.__getFrames()
+    def getRightFrameProp(self):
+        return self.rightFrame
+
+    # def __updateLeftFrame(self):
+    #     while True:
+    #         self.leftFrame = self.getLeftFrame()
+
+    # def __updateLeftFrame(self):
+    #     while True:
+    #         self.leftFrame = self.getLeftFrame()
+
+    def getFrames(self):
         debug = self.config.get()['debug']
         show_landmarks = debug['show_landmarks']
         show_vert_hor_line = debug['show_vert_hor_line']
+        return self.__getFrames(show_landmarks, show_vert_hor_line)
 
-        if show_landmarks:
-            for side, frame in frames.items():
-                if frame is None:
-                    continue
+    def getLeftFrame(self):
+        debug = self.config.get()['debug']
+        show_landmarks = debug['show_landmarks']
+        show_vert_hor_line = debug['show_vert_hor_line']
+        return self.__getLeftFrame(show_landmarks, show_vert_hor_line)
 
-                (_, landmarked) = self.detectors[side].getPositions(frame)
-                frames[side] = landmarked
-
-        if show_vert_hor_line:
-            for side, frame in frames.items():
-                if frame is None:
-                    continue
-                halfHeight = int(frame.shape[0]/2)
-                halfWidth = int(frame.shape[1]/2)
-                frame[:, halfWidth-1:halfWidth+1] = [0, 0, 255]
-                frame[halfHeight-1:halfHeight+1, :] = [0, 0, 255]
-
-        return frames
+    def getRightFrame(self):
+        debug = self.config.get()['debug']
+        show_landmarks = debug['show_landmarks']
+        show_vert_hor_line = debug['show_vert_hor_line']
+        return self.__getRightFrame(show_landmarks, show_vert_hor_line)
 
     def getKeyPoints(self):
-        frames = self.__getFrames()
+        frames = self.__getFrames(False, False)
 
         show_points_per_side = self.config.get(
         )['debug']['show_points_per_side']
@@ -69,7 +79,8 @@ class App:
         normalize_height = calculations["normalize_height"]
 
         if move_points_to_center and offset['enabled']:
-            raise 'Cannot move points to the center and set offset the same time!'
+            raise Exception(
+                'Cannot move points to the center and set offset the same time!')
 
         points = dict({"left": None, "right": None})
         resp = dict({"points": {}})
@@ -169,48 +180,83 @@ class App:
         oldRecord = self.config.get()['playback']['recoding']
         newPlay = newConfig['playback']['playing']['enabled']
         oldPlay = self.config.get()['playback']['playing']['enabled']
+        newFile = newConfig['playback']['playing']['file']
+        oldFile = self.config.get()['playback']['playing']['file']
+        newResolution = tuple(newConfig['camera']['resolution'])
+        oldResolution = tuple(self.config.get()['camera']['resolution'])
 
-        should_reset = newChannels['left'] != oldChannels['left'] or newChannels[
-            'right'] != oldChannels['right'] or newShowLandmarks != oldShowLandmarks or newRecord != oldRecord or newPlay != oldPlay
         self.config.setAll(newConfig)
 
-        if should_reset:
+        if (
+            newChannels['left'] != oldChannels['left'] or
+            newChannels['right'] != oldChannels['right'] or
+            newShowLandmarks != oldShowLandmarks or
+            newRecord != oldRecord or
+            newPlay != oldPlay or
+            newFile != oldFile or
+            newResolution != oldResolution
+        ):
             self.__update_cams()
 
-    def __getFrames(self):
+    def __getFrames(self, show_landmarks, show_vert_hor_line):
         frames = self.cams.getFrames()
         mods = self.config.get()['camera']['mods']
-
+        undistortion = mods['all']['undistortion']
         for side, frame in frames.items():
-            if frame is None:
-                continue
-
-            if mods['all']['undistortion']:
-                frame = self.undistortion.execute(frame)
-
-            rot = mods[side]['rot']
-            if rot > 0:
-                frame = rotate_image(frame, rot * 90)
-
-            frames[side] = frame
-
+            frames[side] = self.__applyImageModifiers(
+                frame, side, mods[side]['rot'], undistortion, show_landmarks, show_vert_hor_line)
         return frames
 
-    def __update_cams(self):
-        self.cams = None
+    def __getLeftFrame(self, show_landmarks, show_vert_hor_line):
+        frame = self.cams.getLeftFrame()
+        mods = self.config.get()['camera']['mods']
+        rot = mods['left']['rot']
+        undistortion = mods['all']['undistortion']
+        return self.__applyImageModifiers(frame, 'left', rot, undistortion, show_landmarks, show_vert_hor_line)
 
+    def __getRightFrame(self, show_landmarks, show_vert_hor_line):
+        frame = self.cams.getRightFrame()
+        mods = self.config.get()['camera']['mods']
+        rot = mods['right']['rot']
+        undistortion = mods['all']['undistortion']
+        return self.__applyImageModifiers(frame, 'right', rot, undistortion, show_landmarks, show_vert_hor_line)
+
+    def __applyImageModifiers(self, frame, side, rot, undistortion, show_landmarks, show_vert_hor_line):
+        if frame is None:
+            return
+
+        if undistortion:
+            frame = self.undistortion_module.execute(frame)
+
+        if rot > 0:
+            frame = rotate_image(frame, rot * 90)
+
+        if show_landmarks:
+            (_, landmarked) = self.detectors[side].getPositions(frame)
+            frame = landmarked
+
+        if show_vert_hor_line:
+            halfHeight = int(frame.shape[0]/2)
+            halfWidth = int(frame.shape[1]/2)
+            frame[:, halfWidth-1:halfWidth+1] = [0, 0, 255]
+            frame[halfHeight-1:halfHeight+1, :] = [0, 0, 255]
+
+        return frame
+
+    def __update_cams(self):
         channels = self.config.get()['camera']['channels']
+        resolution = tuple(self.config.get()['camera']['resolution'])
         record = self.config.get()['playback']['recoding']
         play = self.config.get()['playback']['playing']['enabled']
+        show_landmarks = self.config.get()['debug']['show_landmarks']
 
         if play:
             file = self.config.get()['playback']['playing']['file']
-            self.cams = StereoVideoFeed(
+            self.cams = StereoVideoPlayer(
                 [channels['left'], channels['right']], file)
         else:
-            self.cams = StereoCamera(
-                [channels['left'], channels['right']], requested_resolution=(1280, 700), record=record)
+            self.cams = StereoVideoCamera(
+                [channels['left'], channels['right']], requested_resolution=resolution, record=record)
 
-        show_landmarks = self.config.get()['debug']['show_landmarks']
         self.detectors = {"left": PoseDetection(
             show_landmarks), "right": PoseDetection(show_landmarks)}

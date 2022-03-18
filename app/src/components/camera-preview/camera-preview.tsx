@@ -39,7 +39,7 @@ export default function CameraPreview() {
         return <div className="camera-preview-container">
             {/* {frame?.res && <span className="camera-resolution">{frame.res[0]}x{frame.res[1]}</span>}
             <img alt="frame" src={frame?.frame} /> */}
-            <img src="http://localhost:5000/video_feed/left" alt="frame" />
+            <img src="http://192.168.100.24:8080/api/stream/frame/left" alt="frame" />
         </div>;
     };
 

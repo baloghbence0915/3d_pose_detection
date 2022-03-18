@@ -1,7 +1,7 @@
 import cv2
 
 
-class SingleVideoFeed:
+class SingleVideoPlayer:
     def __init__(self, file):
         self.cap = cv2.VideoCapture(file)
         self.file = file
