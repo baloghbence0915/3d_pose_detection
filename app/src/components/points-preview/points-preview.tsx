@@ -10,7 +10,6 @@ import { useStore } from '../../store/use-store';
 import { Points } from '../../types/points';
 import BodyAngleIndicator from './components/body-angle-indicator';
 import SpeedIndicator from './components/speed-indicator';
-import { LEFT_ANKLE, LEFT_HEEL, LEFT_SHOULDER, RIGHT_ANKLE, RIGHT_HEEL, RIGHT_SHOULDER } from './consts/body-parts';
 
 import './points-preview.scss';
 import { getBox, getAxes, getOrtographicCam, getPerspectiveCam, getBodySpheres, getRigidBody } from './utils';
@@ -137,7 +136,8 @@ export default function PointsPreview() {
         <>
             <div className="point-view" ref={selfRef as any} />
             <BodyAngleIndicator angle={points?.angle} />
-            <SpeedIndicator speed={1} />
+            <SpeedIndicator speed={points?.speed[0]} />
+            <SpeedIndicator speed={points?.speed[1]} asd={true} />
         </>
     );
 }

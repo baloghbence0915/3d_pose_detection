@@ -2,21 +2,22 @@ import { Box } from '@mui/material';
 
 interface SpeedIndicatorProps {
     speed?: number;
+    asd?: boolean;
 }
 
-export default function SpeedIndicator({ speed = 0 }: SpeedIndicatorProps) {
+export default function SpeedIndicator({ speed = 0, asd }: SpeedIndicatorProps) {
     return (
         <Box sx={{
             position: 'fixed',
             top: '150px',
-            left: '32px',
+            left: (32 + (asd ? 240 : 0)) + 'px',
 
         }}>
             <Box
                 sx={{
                     color: 'white',
                 }}>
-                Speed: {speed}
+                Speed: {(speed || 0) * (180 / Math.PI)}
             </Box>
             <Box sx={{
                 width: '100px',
@@ -32,7 +33,7 @@ export default function SpeedIndicator({ speed = 0 }: SpeedIndicatorProps) {
                     border: '1px white solid'
                 }} />
                 <Box sx={{
-                    height: `${speed * 50}px`,
+                    height: `${(speed / (Math.PI / 2)) * 50}px`,
                     width: '10px',
                     background: 'red',
                     position: 'absolute',

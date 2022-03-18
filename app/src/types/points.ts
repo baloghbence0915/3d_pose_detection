@@ -6,6 +6,7 @@ export type PointsArray = Record<number, Point>
 export interface Points {
     points: PointsArray;
     angle: number;
+    speed: number[];
     debug?: {
         ratio: number,
         left: PointsArray,

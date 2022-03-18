@@ -1,4 +1,4 @@
-from math import tan, atan, degrees, radians, sin
+from math import tan, atan, degrees, radians, sin, acos, sqrt, asin
 
 
 def getAlpha(x, phi):
@@ -46,3 +46,33 @@ def getDistanceOfPoint(a, b, angle, baseline, scale):
 
 def linearFn(x, slope, bias):
     return (tan(radians(slope)) * x) + bias
+
+
+def get_body_angle(points):
+    if bool(points):
+        left_shoulder = points[11]
+        right_shoulder = points[12]
+        x = right_shoulder['x'] - left_shoulder['x']
+        z = right_shoulder['z'] - left_shoulder['z']
+
+        return acos(x / sqrt(pow(x, 2) + pow(z, 2))) * (1 if z >= 0 else -1)
+
+    return 0
+
+
+def get_speed(points):
+
+    if bool(points):
+        angles = []
+        for side in [[24, 26], [23, 25]]:
+            hip = points[side[0]]
+            knee = points[side[1]]
+            x = knee['x'] - hip['x']
+            y = knee['y'] - hip['y']
+            z = knee['z'] - hip['z']
+            angle = acos(-y / sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)))
+            angles.append(angle)
+
+        return angles
+
+    return [0, 0]

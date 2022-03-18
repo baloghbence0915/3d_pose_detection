@@ -13,6 +13,7 @@ class StereoCamera:
         try:
             self.leftCam = SingleCamera(
                 channels[0], requested_resolution, record, session_name)
+            self.leftCam.start()
         except Exception as e:
             warn(str(e))
 
@@ -20,6 +21,7 @@ class StereoCamera:
         try:
             self.rightCam = SingleCamera(
                 channels[1], requested_resolution, record, session_name)
+            self.rightCam.start()
         except Exception as e:
             warn(str(e))
 

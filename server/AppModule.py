@@ -4,7 +4,7 @@ from capture.StereoCameraModule import StereoCamera
 from capture.StereoVideoFeedModule import StereoVideoFeed
 from pose.PoseDetectionModule import PoseDetection
 from config.ConfigModule import Config
-from calculations.CalculationsModule import getDistanceOfPoint, linearFn
+from calculations.CalculationsModule import getDistanceOfPoint, linearFn, get_body_angle, get_speed
 from calibration.CalibrationModule import Undistortion
 from camutils.CamutilsModule import rotate_image
 
@@ -146,7 +146,8 @@ class App:
 
                 resp["points"][i] = {'x': -x, 'y': y, 'z': z}
 
-        resp['angle'] = self.__get_body_angle(resp['points'])
+        resp['angle'] = get_body_angle(resp['points'])
+        resp['speed'] = get_speed(resp['points'])
 
         resp['debug'] = dict({'ratio': ratio})
 
@@ -213,14 +214,3 @@ class App:
         show_landmarks = self.config.get()['debug']['show_landmarks']
         self.detectors = {"left": PoseDetection(
             show_landmarks), "right": PoseDetection(show_landmarks)}
-
-    def __get_body_angle(self, points):
-        if 11 in points and 12 in points:
-            left_shoulder = points[11]
-            right_shoulder = points[12]
-            x1 = right_shoulder['x'] - left_shoulder['x']
-            z1 = right_shoulder['z'] - left_shoulder['z']
-
-            return math.acos(x1 / math.sqrt(pow(x1, 2)+pow(z1, 2))) * (1 if z1 >= 0 else -1)
-
-        return 0
