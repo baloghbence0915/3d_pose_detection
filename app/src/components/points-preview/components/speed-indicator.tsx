@@ -10,14 +10,13 @@ export default function SpeedIndicator({ speed = 0, asd }: SpeedIndicatorProps) 
         <Box sx={{
             position: 'fixed',
             top: '150px',
-            left: (32 + (asd ? 240 : 0)) + 'px',
-
+            left: asd ? '32px' : '64px',
         }}>
             <Box
                 sx={{
                     color: 'white',
                 }}>
-                Speed: {(speed || 0) * (180 / Math.PI)}
+                Speed: {(speed || 0) }
             </Box>
             <Box sx={{
                 width: '100px',
@@ -33,7 +32,7 @@ export default function SpeedIndicator({ speed = 0, asd }: SpeedIndicatorProps) 
                     border: '1px white solid'
                 }} />
                 <Box sx={{
-                    height: `${(speed / (Math.PI / 2)) * 50}px`,
+                    height: `${speed * 50}px`,
                     width: '10px',
                     background: 'red',
                     position: 'absolute',

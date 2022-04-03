@@ -18,7 +18,6 @@ const connectionService = ConnectionService.getInstance();
 const statsService = StatsService.getInstance();
 
 export default function PointsPreview() {
-    const isConnected = useIsConnected();
     const { state } = useStore();
     const [points, setPoints] = useState<Points | null>();
 
@@ -94,19 +93,16 @@ export default function PointsPreview() {
         animate();
     }, [renderer, scene]);
 
-    async function getPoints() {
-        isLoadingRef.current = true;
-        const points = await connectionService.getPoints().catch(() => null);
-        setPoints(points);
-        statsService.update();
-        isLoadingRef.current = false;
-    }
-
     useEffect(() => {
-        if (isConnected && !isLoadingRef.current) {
-            getPoints();
-        }
-    }, [isConnected, points]);
+        connectionService.startKeyPoints((k)=>{
+            setPoints(k);
+            statsService.update();
+        });
+
+        return () => {
+            connectionService.stopStreamingKeypoints();
+        };
+    }, []);
 
 
     useEffect(() => {
@@ -136,8 +132,8 @@ export default function PointsPreview() {
         <>
             <div className="point-view" ref={selfRef as any} />
             <BodyAngleIndicator angle={points?.angle} />
-            <SpeedIndicator speed={points?.speed[0]} />
-            <SpeedIndicator speed={points?.speed[1]} asd={true} />
+            <SpeedIndicator speed={points?.speed} />
+            {/* <SpeedIndicator speed={(points?.speed as any)?.[1]} asd={true} /> */}
         </>
     );
 }

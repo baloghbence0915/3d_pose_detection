@@ -1,70 +1,92 @@
-import math
-
-from cv2 import undistort
-
+import numpy as np
+import multiprocessing
 from capture.StereoVideoCameraModule import StereoVideoCamera
 from capture.StereoVideoPlayerModule import StereoVideoPlayer
 from pose.PoseDetectionModule import PoseDetection
+from pose.PoseLandmarksModule import drawLandmarks
 from config.ConfigModule import Config
-from calculations.CalculationsModule import getDistanceOfPoint, linearFn, get_body_angle, get_speed
+from calculations.CalculationsModule import getDistanceOfPoint, linearFn, getBodyAngle, getSpeed, unwrapCoords
 from calibration.CalibrationModule import Undistortion
-from camutils.CamutilsModule import rotate_image
-
-# leftX, leftY, rightX, rightY = unwrapCoords(points, i)
-
-
-def unwrapCoords(points, i):
-    return points["left"][i]['x'], points["left"][i]['y'], points["right"][i]['x'], points["right"][i]['y']
+from camutils.CamutilsModule import rotateImage
+from threading import Thread
+from fps.fps import FPS
 
 
 class App:
     def __new__(cls):
         if not hasattr(cls, 'instance'):
             cls.instance = super(App, cls).__new__(cls)
+            cls.instance.__print('Init')
             cls.instance.config = Config()
-            cls.instance.undistortion_module = Undistortion()
-            cls.instance.rotate_image_module = rotate_image
-            # cls.instance.leftFrame = None
-            # cls.instance.rightFrame = None
+            cls.instance.undistortion = Undistortion()
+            cls.instance.frames = None
+            cls.instance.poses = None
+            cls.instance.stopped = False
             cls.instance.__update_cams()
+            cls.instance.thread = None
 
         return cls.instance
 
-    def getLeftFrameProp(self):
-        return self.leftFrame
+    def start(self):
+        if self.thread is None:
+            self.thread = Thread(target=self.__update, args=())
+            self.thread.daemon = True
+            self.thread.start()
+        return self
 
-    def getRightFrameProp(self):
-        return self.rightFrame
+    def __update(self):
+        fps = FPS().start()
+        self.__print('Start processing thread')
+        while True:
+            if self.stopped == True:
+                break
+            frames = self.cams.getFrames()
+            poses = {'left': None, 'right': None}
 
-    # def __updateLeftFrame(self):
-    #     while True:
-    #         self.leftFrame = self.getLeftFrame()
+            for side in frames.keys():
+                self.__applyImageModifiers(frames, poses, side)
 
-    # def __updateLeftFrame(self):
-    #     while True:
-    #         self.leftFrame = self.getLeftFrame()
+            self.frames = frames
+            self.poses = poses
+
+            fps.update()
+            if (fps._numFrames % 60) == 0:
+                fps.stop()
+                self.__print('Processing FPS is: ' + str(fps.fps()))
+        self.__print('Stop processing thread')
+
+    def stop(self):
+        self.stopped = True
 
     def getFrames(self):
         debug = self.config.get()['debug']
         show_landmarks = debug['show_landmarks']
         show_vert_hor_line = debug['show_vert_hor_line']
-        return self.__getFrames(show_landmarks, show_vert_hor_line)
 
-    def getLeftFrame(self):
-        debug = self.config.get()['debug']
-        show_landmarks = debug['show_landmarks']
-        show_vert_hor_line = debug['show_vert_hor_line']
-        return self.__getLeftFrame(show_landmarks, show_vert_hor_line)
+        frames = {"left": np.copy(
+            self.frames['left']), "right": np.copy(self.frames['right'])}
 
-    def getRightFrame(self):
-        debug = self.config.get()['debug']
-        show_landmarks = debug['show_landmarks']
-        show_vert_hor_line = debug['show_vert_hor_line']
-        return self.__getRightFrame(show_landmarks, show_vert_hor_line)
+        def doThing(x):
+            return x*x
+
+        if __name__ == '__main__':
+            pool = multiprocessing.Pool(4)
+            res = pool.map(doThing, range(0, 5))
+            print(res)
+
+        if show_landmarks or show_vert_hor_line:
+            for side, frame in frames.items():
+                if show_landmarks and self.poses is not None and self.poses[side] is not None:
+                    drawLandmarks(frame, self.poses[side])
+                if show_vert_hor_line:
+                    halfHeight = int(frame.shape[0]/2)
+                    halfWidth = int(frame.shape[1]/2)
+                    frame[:, halfWidth-1:halfWidth+1] = [0, 0, 255]
+                    frame[halfHeight-1:halfHeight+1, :] = [0, 0, 255]
+
+        return frames
 
     def getKeyPoints(self):
-        frames = self.__getFrames(False, False)
-
         show_points_per_side = self.config.get(
         )['debug']['show_points_per_side']
 
@@ -82,21 +104,21 @@ class App:
             raise Exception(
                 'Cannot move points to the center and set offset the same time!')
 
-        points = dict({"left": None, "right": None})
-        resp = dict({"points": {}})
+        points = {"left": None, "right": None}
+        resp = {"points": {}}
         ratio = 0
 
-        for side, frame in frames.items():
+        for side, frame in self.frames.items():
             if frame is None:
                 continue
 
             ratio = frame.shape[0] / frame.shape[1]
 
-            (pose, _) = self.detectors[side].getPositions(frame)
+            pose = self.poses[side]
 
-            if pose.pose_landmarks is not None:
-                points[side] = {id: dict({'x': l.x, 'y': (1-l.y)*ratio})
-                                for id, l in enumerate(pose.pose_landmarks.landmark)}
+            if pose is not None and pose.pose_landmarks is not None:
+                points[side] = {id: {'x': l.x, 'y': (
+                    1-l.y)*ratio} for id, l in enumerate(pose.pose_landmarks.landmark)}
 
         if points['left'] is not None and points['right'] is not None:
             # difference from X and Z axis
@@ -157,10 +179,10 @@ class App:
 
                 resp["points"][i] = {'x': -x, 'y': y, 'z': z}
 
-        resp['angle'] = get_body_angle(resp['points'])
-        resp['speed'] = get_speed(resp['points'])
+        resp['angle'] = getBodyAngle(resp['points'])
+        resp['speed'] = getSpeed(resp['points'])
 
-        resp['debug'] = dict({'ratio': ratio})
+        resp['debug'] = {'ratio': ratio}
 
         if show_points_per_side:
             resp['debug']['left'] = points['left']
@@ -198,65 +220,54 @@ class App:
         ):
             self.__update_cams()
 
-    def __getFrames(self, show_landmarks, show_vert_hor_line):
-        frames = self.cams.getFrames()
+    def __applyImageModifiers(self, frames, poses, side):
+        frame = frames[side]
         mods = self.config.get()['camera']['mods']
-        undistortion = mods['all']['undistortion']
-        for side, frame in frames.items():
-            frames[side] = self.__applyImageModifiers(
-                frame, side, mods[side]['rot'], undistortion, show_landmarks, show_vert_hor_line)
-        return frames
-
-    def __getLeftFrame(self, show_landmarks, show_vert_hor_line):
-        frame = self.cams.getLeftFrame()
-        mods = self.config.get()['camera']['mods']
-        rot = mods['left']['rot']
-        undistortion = mods['all']['undistortion']
-        return self.__applyImageModifiers(frame, 'left', rot, undistortion, show_landmarks, show_vert_hor_line)
-
-    def __getRightFrame(self, show_landmarks, show_vert_hor_line):
-        frame = self.cams.getRightFrame()
-        mods = self.config.get()['camera']['mods']
-        rot = mods['right']['rot']
-        undistortion = mods['all']['undistortion']
-        return self.__applyImageModifiers(frame, 'right', rot, undistortion, show_landmarks, show_vert_hor_line)
-
-    def __applyImageModifiers(self, frame, side, rot, undistortion, show_landmarks, show_vert_hor_line):
-        if frame is None:
-            return
+        rot = mods[side]['rot']
+        undistortion = mods['all']['undistortion']['enabled']
 
         if undistortion:
-            frame = self.undistortion_module.execute(frame)
+            frame = self.undistortion.execute(frame)
 
         if rot > 0:
-            frame = rotate_image(frame, rot * 90)
+            frame = rotateImage(frame, rot * 90)
 
-        if show_landmarks:
-            (_, landmarked) = self.detectors[side].getPositions(frame)
-            frame = landmarked
+        if side == 'left':
+            poses[side] = self.detectors[side].getPose(frame)
 
-        if show_vert_hor_line:
-            halfHeight = int(frame.shape[0]/2)
-            halfWidth = int(frame.shape[1]/2)
-            frame[:, halfWidth-1:halfWidth+1] = [0, 0, 255]
-            frame[halfHeight-1:halfHeight+1, :] = [0, 0, 255]
-
-        return frame
+        frames[side] = frame
 
     def __update_cams(self):
-        channels = self.config.get()['camera']['channels']
-        resolution = tuple(self.config.get()['camera']['resolution'])
-        record = self.config.get()['playback']['recoding']
-        play = self.config.get()['playback']['playing']['enabled']
-        show_landmarks = self.config.get()['debug']['show_landmarks']
+        self.__print("Updating cams")
+        camera = self.config.get()['camera']
+        channels = camera['channels']
+        resolution = tuple(camera['resolution'])
 
-        if play:
-            file = self.config.get()['playback']['playing']['file']
+        playback = self.config.get()['playback']
+        record = playback['recoding']
+        play = playback['playing']['enabled']
+        file = playback['playing']['file']
+
+        self.frames = {
+            "left": np.zeros((resolution[0], resolution[1], 3), np.uint8),
+            "right": np.zeros((resolution[0], resolution[1], 3), np.uint8),
+        }
+
+        self.poses = {'left': None, 'right': None}
+
+        if play and file:
             self.cams = StereoVideoPlayer(
                 [channels['left'], channels['right']], file)
         else:
             self.cams = StereoVideoCamera(
-                [channels['left'], channels['right']], requested_resolution=resolution, record=record)
+                [channels['left'], channels['right']], resolution=resolution, record=record)
 
-        self.detectors = {"left": PoseDetection(
-            show_landmarks), "right": PoseDetection(show_landmarks)}
+        self.detectors = {"left": PoseDetection(), "right": PoseDetection()}
+        self.__print("Updating cams done")
+
+    def __print(self, str):
+        print('App:\t'+str)
+
+    def __del__(self):
+        self.stopped = True
+        del self.cams

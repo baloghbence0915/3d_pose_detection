@@ -1,93 +1,93 @@
 {
+    "calculations": {
+        "align_ground": {
+            "bias": 0.23,
+            "enabled": false,
+            "slope": -32
+        },
+        "horizontal_angle": 43,
+        "move_points_to_center": false,
+        "normalize_height": {
+            "bias": 0.1,
+            "enabled": false,
+            "slope": 45
+        },
+        "offset": {
+            "enabled": false,
+            "x": -0.5,
+            "z": -0.8
+        },
+        "stereo_baseline": 0.1,
+        "stereo_scale": 1
+    },
     "camera": {
-        "resolution": [
-            1280,
-            719
-        ],
         "channels": {
             "left": 0,
-            "right": 1
+            "right": 0
         },
         "mods": {
+            "all": {
+                "undistortion": {
+                    "D": [
+                        [
+                            -0.2551242447457564
+                        ],
+                        [
+                            2.7237971869512685
+                        ],
+                        [
+                            -20.616930920493793
+                        ],
+                        [
+                            53.02511005789323
+                        ]
+                    ],
+                    "DIM": [
+                        640,
+                        480
+                    ],
+                    "K": [
+                        [
+                            641.5261881982101,
+                            0.0,
+                            319.5031693747807
+                        ],
+                        [
+                            0.0,
+                            640.2415227168956,
+                            255.60588796480621
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    ],
+                    "enabled": true
+                }
+            },
             "left": {
                 "rot": 3
             },
             "right": {
                 "rot": 1
-            },
-            "all": {
-                "undistortion": {
-                    "enabled": true,
-                    "DIM": [
-                        1280,
-                        720
-                    ],
-                    "K": [
-                        [
-                            968.7993688992763,
-                            0,
-                            636.6769644053292
-                        ],
-                        [
-                            0,
-                            968.1174917158764,
-                            371.2578003431906
-                        ],
-                        [
-                            0,
-                            0,
-                            1
-                        ]
-                    ],
-                    "D": [
-                        [
-                            -0.06072065680960785
-                        ],
-                        [
-                            -0.6138856994344386
-                        ],
-                        [
-                            2.7087538472302595
-                        ],
-                        [
-                            -4.572162434753327
-                        ]
-                    ]
-                }
             }
-        }
+        },
+        "resolution": [
+            1280,
+            719
+        ]
     },
     "debug": {
         "show_landmarks": true,
-        "show_vert_hor_line": false,
-        "show_points_per_side": false
-    },
-    "calculations": {
-        "horizontal_angle": 43,
-        "stereo_baseline": 0.1,
-        "stereo_scale": 1,
-        "move_points_to_center": false,
-        "align_ground": {
-            "enabled": true,
-            "slope": -32,
-            "bias": 0.23
-        },
-        "normalize_height": {
-            "enabled": true,
-            "slope": 45,
-            "bias": 0.1
-        },
-        "offset": {
-            "enabled": true,
-            "x": -0.5,
-            "z": -0.8
-        }
+        "show_points_per_side": true,
+        "show_vert_hor_line": false
     },
     "playback": {
-        "recoding": false,
         "playing": {
             "enabled": false,
-            "file": "camera_20220317174405762424"
-        }
+            "file": "camera_20220312210945545424"
+        },
+        "recoding": false
     }
 }

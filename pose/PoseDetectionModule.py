@@ -1,23 +1,14 @@
-from turtle import position
 import cv2
-from mediapipe.python.solutions import pose, drawing_utils
-import numpy as np
+from mediapipe.python.solutions import pose
 
 
 class PoseDetection:
-    def __init__(self, drawLandmarks=False):
-        self.drawLandmarks = drawLandmarks
+    def __init__(self):
         self.pose = pose.Pose(model_complexity=1)
 
-    def getPositions(self, frame):
+    def getPose(self, frame):
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        positions = self.pose.process(rgb)
-        landmarks = frame 
-
-        if positions.pose_landmarks and self.drawLandmarks == True:
-            copyFrame = np.array(frame)
-            drawing_utils.draw_landmarks(
-                copyFrame, positions.pose_landmarks, pose.POSE_CONNECTIONS)
-            landmarks = copyFrame
-
-        return (positions, landmarks)
+        pose = self.pose.process(rgb)
+        if pose is None or pose.pose_landmarks is None:
+            return None
+        return pose.pose_landmarks

@@ -28,4 +28,8 @@ class Undistortion:
         self.map2 = map2
 
     def execute(self, img):
-        return cv2.remap(img, self.map1, self.map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+        try:
+            return cv2.remap(img, self.map1, self.map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+        except:
+            print('CalibrationModule:\t' + str(img.shape))
+            return img

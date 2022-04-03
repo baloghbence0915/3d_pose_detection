@@ -58,36 +58,36 @@
         }
     },
     "debug": {
-        "show_landmarks": false,
+        "show_landmarks": true,
         "show_vert_hor_line": false,
         "show_points_per_side": false
     },
     "calculations": {
         "horizontal_angle": 43,
-        "stereo_baseline": 0.0018,
-        "stereo_scale": 30,
+        "stereo_baseline": 0.1,
+        "stereo_scale": 1,
         "move_points_to_center": false,
         "align_ground": {
             "enabled": true,
-            "slope": -36,
-            "bias": 0.15
+            "slope": -32,
+            "bias": 0.23
         },
         "normalize_height": {
             "enabled": true,
-            "slope": 70,
-            "bias": 0
+            "slope": 45,
+            "bias": 0.1
         },
         "offset": {
             "enabled": true,
             "x": -0.5,
-            "z": -0.5
+            "z": -0.8
         }
     },
     "playback": {
         "recoding": false,
         "playing": {
-            "enabled": true,
-            "file": "camera_20220312210945545424"
+            "enabled": false,
+            "file": "camera_20220317174405762424"
         }
     }
 }

@@ -1,50 +1,47 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useIsConnected } from '../../hooks/use-is-connected';
+import { NOT_FOUND_PIC } from '../../not-found-pic';
 import { ConnectionService } from '../../services/connection';
-import { StatsService } from '../../services/stats.service';
-import { Frame, Frames } from '../../types/frames';
 
 import './camera-preview.scss';
 
-const connectionService = ConnectionService.getInstance();
-const statsService = StatsService.getInstance();
+const connectionService = ConnectionService.getInstance()
 
 export default function CameraPreview() {
     const isConnected = useIsConnected();
-    const [frames, setFrames] = useState<Frames>();
-    const isLoadingRef = useRef(false);
+    const leftFrameRef = useRef<HTMLImageElement>(null);
+    const rightFrameRef = useRef<HTMLImageElement>(null);
 
     useEffect(() => {
-        statsService.update();
-    }, [frames]);
-
-    async function getFrames() {
-        // isLoadingRef.current = true;
-        // const frames = await connectionService.getFrames()
-        // setFrames(frames);
-        // isLoadingRef.current = false;
-    }
-
-    useEffect(() => {
-        if (isConnected && !isLoadingRef.current) {
-            getFrames();
+        if (leftFrameRef.current && rightFrameRef.current) {
+            if (isConnected) {
+                leftFrameRef.current.src = `http://${connectionService.getHost()}/api/stream/frame/left`;
+                rightFrameRef.current.src = `http://${connectionService.getHost()}/api/stream/frame/right`;
+            } else {
+                leftFrameRef.current.src = NOT_FOUND_PIC;
+                rightFrameRef.current.src = NOT_FOUND_PIC;
+            }
         }
-    }, [isConnected, frames]);
+    }, [isConnected]);
 
-    const renderSide = (frame?: Frame) => {
-        // if (!frame) {
-        //     return null;
-        // }
+    useEffect(() => {
+        const imgLeft = leftFrameRef.current;
+        const imgRight = rightFrameRef.current;
 
-        return <div className="camera-preview-container">
-            {/* {frame?.res && <span className="camera-resolution">{frame.res[0]}x{frame.res[1]}</span>}
-            <img alt="frame" src={frame?.frame} /> */}
-            <img src="http://192.168.100.24:8080/api/stream/frame/left" alt="frame" />
-        </div>;
-    };
+        return () => {
+            if (imgLeft && imgRight) {
+                imgLeft.src = null as any;
+                imgRight.src = null as any;
+            }
+        };
+    }, []);
 
     return <div className="camera-preview">
-        {renderSide(frames?.left)}
-        {renderSide(frames?.right)}
+        <div className="camera-preview-container">
+            <img alt="left-frame" src={NOT_FOUND_PIC} ref={leftFrameRef} />
+        </div>
+        <div className="camera-preview-container">
+            <img alt="right-frame" src={NOT_FOUND_PIC} ref={rightFrameRef} />
+        </div>
     </div>
 };
