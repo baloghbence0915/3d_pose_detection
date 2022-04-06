@@ -10,7 +10,8 @@ export default function SpeedIndicator({ speed = 0, asd }: SpeedIndicatorProps) 
         <Box sx={{
             position: 'fixed',
             top: '150px',
-            left: asd ? '32px' : '64px',
+            left: asd ? '32px' : '500px',
+            fontSize: '32px'
         }}>
             <Box
                 sx={{

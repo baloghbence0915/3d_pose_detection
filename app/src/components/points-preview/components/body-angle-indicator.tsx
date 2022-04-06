@@ -12,6 +12,7 @@ export default function BodyAngleIndicator({ angle }: PointsPreview) {
             position: 'fixed',
             top: '50px',
             left: '32px',
+            fontSize: '32px'
         }}>
             <Box
                 sx={{

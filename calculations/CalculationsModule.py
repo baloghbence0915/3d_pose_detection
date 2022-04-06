@@ -3,6 +3,7 @@ from collections import deque
 import csv
 
 PI_PER_2 = pi / 2
+PI_PER_4 = pi / 4
 
 def getAlpha(x, phi):
     m = 0.5 / tan(radians(phi / 2))
@@ -53,9 +54,10 @@ def linearFn(x, slope, bias):
 
 def getAngle(p1, p2):
     a = (p1['x'] * p2['x']) + (p1['y'] * p2['y']) + (p1['z'] * p2['z'])
-    b = sqrt((p1['x'] ** 2) + (p1['z'] ** 2) + (p1['y'] ** 2)) + \
-        sqrt((p1['x'] ** 2) + (p1['z'] ** 2) + (p1['y'] ** 2))
-    return acos(a/b)
+    p1Length = sqrt((p1['x'] ** 2) + (p1['z'] ** 2) + (p1['y'] ** 2))
+    p2Length = sqrt((p2['x'] ** 2) + (p2['z'] ** 2) + (p2['y'] ** 2))
+    b = p1Length * p2Length
+    return acos(a / b)
 
 
 def getBodyAngle(points):
@@ -66,9 +68,6 @@ def getBodyAngle(points):
         z = right_shoulder['z'] - left_shoulder['z']
 
         return getAngle({'x': x, 'y': 0, 'z': z}, {'x': 0, 'y': 0, 'z': -1}) - PI_PER_2
-        # return x / sqrt(pow(x, 2) + pow(z, 2))
-        # * (1 if z >= 0 else -1)
-
     return 0
 
 
@@ -76,14 +75,14 @@ def getBodyAngle(points):
 l = 20
 queues = [deque([], l), deque([], l)]
 test = deque([], l)
-# f = open('f1.csv', 'w')
-# writer = csv.writer(f)
+f = open('f1.csv', 'w')
+writer = csv.writer(f)
 
-# counter = 0
+counter = 0
 
 
 def getSpeed(points):
-    # global counter
+    global counter
     offset = 0.075
     if bool(points):
         for i, side in enumerate([[24, 26], [23, 25]]):
@@ -93,29 +92,32 @@ def getSpeed(points):
             y = knee['y'] - hip['y']
             z = knee['z'] - hip['z']
             angle = getAngle({'x': x, 'y': y, 'z': z},{'x': 0, 'y': -1, 'z': 0})
-            queues[i].append((angle - offset) if angle > offset else 0)
+            queues[i].append(angle)
 
-        # if counter < 1000:
-        #     writer.writerow([queues[0][-1], queues[1][-1]])
-        # elif counter == 1000:
-        #     print('Close f')
-        #     f.close()
-        # counter+=1
+        if counter < 1500:
+            writer.writerow([queues[0][-1], queues[1][-1]])
+            if (counter % 100)==0:
+                print(counter)
+        elif counter == 1500:
+            print('Close f')
+            f.close()
+        counter+=1
 
-        avg = []
-        for q in queues:
-            sum = 0
-            for val in q:
-                sum += val
-            avg.append(sum/l)
+        # avg = []
+        # for q in queues:
+        #     sum = 0
+        #     for val in q:
+        #         sum += val
+        #     avg.append(sum/l)
 
-        test.append(avg[0] * avg[1] * 500)
+        # test.append(avg[0] * avg[1] * 500)
 
-        sum = 0
-        for val in test:
-            sum += val
-        avg = sum/l
-        return avg if avg < 1 else 1
+        # sum = 0
+        # for val in test:
+        #     sum += val
+        # avg = sum/l
+        # return avg if avg < 1 else 1
+
 
     return 0
 
