@@ -76,18 +76,18 @@ exports.transformDomain = function (v) {
     return v / Math.PI
 }
 
-exports.getDerivative = function (arr) {
-    let prev = 0;
-    return arr.reduce((arr, c) => {
-        const res = [...arr, c - prev]
-        prev = c;
-        return res
-    }, [])
-}
+// exports.getDerivative = function (arr) {
+//     let prev = 0;
+//     return arr.reduce((arr, c) => {
+//         const res = [...arr, c - prev]
+//         prev = c;
+//         return res
+//     }, [])
+// }
 
-exports.transformDerivate = function (v) {
-    return v > 0 ? 1 : (v < 0 ? -1 : 0)
-}
+// exports.transformDerivate = function (v) {
+//     return v > 0 ? 1 : (v < 0 ? -1 : 0)
+// }
 
 
 exportsgetProcessedPeaks = function (peakArray, width) {
@@ -105,47 +105,47 @@ exportsgetProcessedPeaks = function (peakArray, width) {
     return procPeakArray
 }
 
-exports.multiplyArrays = function (peaks1, peaks2) {
-    const combinedPeaks = [];
-    for (let i = 0; i < peaks1.length; i++) {
-        combinedPeaks.push(peaks1[i] * peaks2[i] * 1)
-    }
-    return combinedPeaks
-}
+// exports.multiplyArrays = function (peaks1, peaks2) {
+//     const combinedPeaks = [];
+//     for (let i = 0; i < peaks1.length; i++) {
+//         combinedPeaks.push(peaks1[i] * peaks2[i] * 1)
+//     }
+//     return combinedPeaks
+// }
 
 exports.writeData = function (arr, label) {
     return '\n' + arr.map((d, i) => d === undefined ? '' : `${i},${label},${d}`).join('\n')
 }
 
-exports.getFrequency = function (arr, width) {
-    const frequency = []
+// exports.getFrequency = function (arr, width) {
+//     const frequency = []
 
-    arr.reduce((arr2, c) => {
-        const arr3 = [...arr2.slice(Math.max(arr2.length - width + 1, 0)), c];
-        const count = arr3.reduce((c, current) => current !== undefined ? c + 0.1 : c, 0)
-        frequency.push(count)
-        return [...arr2, c];
-    }, []);
+//     arr.reduce((arr2, c) => {
+//         const arr3 = [...arr2.slice(Math.max(arr2.length - width + 1, 0)), c];
+//         const count = arr3.reduce((c, current) => current !== undefined ? c + 0.1 : c, 0)
+//         frequency.push(count)
+//         return [...arr2, c];
+//     }, []);
 
-    return frequency
-}
+//     return frequency
+// }
 
-exports.getFrequency2 = function (arr, width) {
-    const frequency = []
+// exports.getFrequency2 = function (arr, width) {
+//     const frequency = []
 
-    arr.reduce((arr2, c) => {
-        frequency.push(0)
-        const arr3 = [...arr2.slice(Math.max(arr2.length - width + 1, 0)), c];
-        const count = arr3.find(v => v > 0)
-        if(count)
-            frequency[frequency.length - 1] = 0.3
-        return [...arr2, c];
-    }, []);
+//     arr.reduce((arr2, c) => {
+//         frequency.push(0)
+//         const arr3 = [...arr2.slice(Math.max(arr2.length - width + 1, 0)), c];
+//         const count = arr3.find(v => v > 0)
+//         if(count)
+//             frequency[frequency.length - 1] = 0.3
+//         return [...arr2, c];
+//     }, []);
 
-    return frequency
-}
+//     return frequency
+// }
 
-exports.getChanges = function (der1, der2) {
+exports.getCrosses = function (der1, der2) {
     const changing = []
 
     function isCrossing(p1, p2, c1, c2) {

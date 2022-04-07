@@ -1,12 +1,21 @@
+import os
 import cv2
 import random  
 import string 
 import numpy as np
-from fps.fps import FPS
-from threading import Thread
 from camutils.CamutilsModule import getPathOfRecoding
 
 ERROR_TOLERANCE = 10
+
+def getBackend():
+    win = cv2.CAP_DSHOW
+    lin = cv2.CAP_V4L2
+
+    if os.name == "nt":
+        return win
+    else:
+        return lin
+
 
 class SingleVideoCamera:
 
@@ -25,7 +34,7 @@ class SingleVideoCamera:
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         self.resolution = (int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(
             self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-        self.emptyFrame = np.zeros((width, height, 3), np.uint8)
+        self.emptyFrame = np.zeros((width, height, 3), np.uint8) + 100
 
         if self.cap.isOpened() == False:
             self.__print('Unable to read camera feed')

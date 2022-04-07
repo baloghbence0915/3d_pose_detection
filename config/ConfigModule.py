@@ -25,16 +25,7 @@ class Config(object):
     def get(cls):
         return cls.instance.config
 
-    def set(cls, name, val):
-        cls.instance.config[name] = val
-
-        with open(getAbsolutePath(__file__, CONFIG), 'w') as outfile:
-            json.dump(cls.instance.config, outfile)
-
-    def getAll(cls):
-        return cls.instance.config
-
-    def setAll(cls, config):
+    def set(cls, config):
         cls.instance.config = config
 
         with open(getAbsolutePath(__file__, CONFIG), 'w') as outfile:

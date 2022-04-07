@@ -2,15 +2,10 @@ const fs = require('fs');
 const {
     getSlidingAveraged,
     filterAngles,
-    getDerivative,
     getPeaks,
-    multiplyArrays,
-    transformDerivate,
     transformDomain,
     writeData,
-    getFrequency,
-    getChanges: getCrosses,
-    getFrequency2
+    getCrosses,
 } = require('./utils');
 let data = fs.readFileSync('f1.csv', 'utf8')
 
