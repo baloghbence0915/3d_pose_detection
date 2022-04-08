@@ -19,17 +19,21 @@ from pose.PoseLandmarksModule import drawLandmarks
 from fps.fps import FPS
 
 
-def captureCamera(getCap, pipe, session):
-    cap, det, side = getCap(session)
-    frame = None
-    fps = FPS(100, cap.id).start()
+def captureCamera(getLeftCap, getRightCap, pipeLeft, session):
+    capLeft, detLeft, sideLeft = getLeftCap(session)
+    capRight, detRight, sideRight = getRightCap(session)
+    fps = FPS(100).start()
     config = Config()
     undistortion = Undistortion()
     while True:
-        f = cap.getFrame()
-        (frame, pose) = applyImageModifiers(f, side, config, det, undistortion)
+        fLeft = capLeft.getFrame()
+        (frameLeft, poseLeft) = applyImageModifiers(fLeft, sideLeft, config, detLeft, undistortion)
+        fRight = capRight.getFrame()
+        (frameRight, poseRight) = applyImageModifiers(fRight, sideRight, config, detRight, undistortion)
         fps.update()
-        pipe.send((frame, pose))
+        pipeLeft.send((frameLeft, poseLeft))
+        pipeLeft.send((frameRight, poseRight))
+        # pipeRight.send((frameRight, poseRight))
 
 def getCameraConfig(side):
     config = Config().get()
@@ -84,7 +88,7 @@ def getVideoPlayer():
 if __name__ == '__main__':
     multiprocessing.set_start_method('spawn')
     pipeLeftBegin, pipeLeftEnd = multiprocessing.Pipe()
-    pipeRightBegin, pipeRightEnd = multiprocessing.Pipe()
+    # pipeRightBegin, pipeRightEnd = multiprocessing.Pipe()
 
     processLeft = None
     processRight = None
@@ -94,36 +98,34 @@ if __name__ == '__main__':
     frameRight = None
     poseLeft = None
     poseRight = None
+    poseRight = None
 
     def startProcesses():
-        global processLeft, processRight
+        global processLeft
         config = Config().get()
 
         if config["playback"]["playing"]["enabled"]:
             processPlayer = multiprocessing.Process(
-                target=capturePlayer, args=[getVideoPlayer, pipeLeftBegin, pipeRightBegin], daemon=True)
+                target=capturePlayer, args=[getVideoPlayer, pipeLeftBegin], daemon=True)
             processPlayer.start()
         else:
             now = datetime.now()
             session = 'camera_{0}'.format(now.strftime('%Y%m%d%H%M%S%f'))
 
             processLeft = multiprocessing.Process(
-                target=captureCamera, args=[getLeftCamera, pipeLeftBegin, session], daemon=True)
-            processRight = multiprocessing.Process(
-                target=captureCamera, args=[getRightCamera, pipeRightBegin, session], daemon=True)
+                target=captureCamera, args=[getLeftCamera, getRightCamera, pipeLeftBegin, session], daemon=True)
             processLeft.start()
-            processRight.start()
 
     def stopProcesses():
-        global processLeft, processRight, processPlayer
-        processes = [processLeft, processRight, processPlayer]
+        global processLeft, processPlayer
+        processes = [processLeft, processPlayer]
         for process in processes:
             if process is not None:
                 process.terminate()
             process = None
 
     def run():
-        global frameLeft, frameRight, poseLeft, poseRight, processLeft, processRight, processPlayer
+        global frameLeft, frameRight, poseLeft, poseRight, processLeft, processPlayer
         print("Main thread started")
         config = Config().get()
         isPlayback = config["playback"]["playing"]["enabled"]
@@ -134,15 +136,12 @@ if __name__ == '__main__':
                 if not processPlayer.is_alive():
                     break
             else:
-                if not processLeft.is_alive() and not processRight.is_alive():
+                if not processLeft.is_alive():
                     break
 
             if pipeLeftEnd.poll():
                 (frameLeft, poseLeft) = pipeLeftEnd.recv()
-            else:
-                continue
-            if pipeRightEnd.poll():
-                (frameRight, poseRight) = pipeRightEnd.recv()
+                (frameRight, poseRight) = pipeLeftEnd.recv()
             else:
                 continue
                 

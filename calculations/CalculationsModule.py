@@ -75,20 +75,19 @@ speed = Speed()
 
 
 def getSpeed(points):
-    # global speed
-    # if bool(points):
-    #     for i, idx in enumerate([[24, 26], [23, 25]]):
-    #         hip = points[idx[0]]
-    #         knee = points[idx[1]]
-    #         x = knee['x'] - hip['x']
-    #         y = knee['y'] - hip['y']
-    #         z = knee['z'] - hip['z']
-    #         angle = getAngle({'x': x, 'y': y, 'z': z},
-    #                          {'x': 0, 'y': -1, 'z': 0})
-    #         speed.addAngle('left' if i == 0 else 'right', angle)
+    global speed
+    if bool(points):
+        for i, idx in enumerate([[24, 26], [23, 25]]):
+            hip = points[idx[0]]
+            knee = points[idx[1]]
+            x = knee['x'] - hip['x']
+            y = knee['y'] - hip['y']
+            z = knee['z'] - hip['z']
+            angle = getAngle({'x': x, 'y': y, 'z': z},
+                             {'x': 0, 'y': -1, 'z': 0})
+            speed.addAngle('left' if i == 0 else 'right', angle)
 
-    # return speed.getSpeed()
-    return 0
+    return speed.getSpeed()
 
 
 def unwrapCoords(points, i):

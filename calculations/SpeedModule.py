@@ -23,8 +23,8 @@ class Speed:
 
         self.filterThreshold = 0.1  # ~5-6°
         self.counter = 0
-        self.f = open('f2.csv', 'w')
-        self.writer = csv.writer(self.f)
+        # self.f = open('f2.csv', 'w')
+        # self.writer = csv.writer(self.f)
 
     def addAngle(self, side, angle):
         angles = None
@@ -47,21 +47,20 @@ class Speed:
     def getSpeed(self):
         self._processCrosses()
 
-        if self.counter < 1500:
-            # self.writer.writerow([queues[0][-1], queues[1][-1]])
-            self.writer.writerow([self.counter, 'leftAngle', self.leftAngles[-1]])
-            self.writer.writerow([self.counter, 'rightAngle', self.rightAngles[-1]])
-            self.writer.writerow([self.counter, 'leftMagnitude', self.leftMagnitudes[-1]])
-            self.writer.writerow([self.counter, 'rightMagnitude', self.rightMagnitudes[-1]])
-            self.writer.writerow([self.counter, 'leftPeak', self.leftPeaks[-1]])
-            self.writer.writerow([self.counter, 'rightPeak', self.rightPeaks[-1]])
-            self.writer.writerow([self.counter, 'cross', 0.5 if self.crosses[-1] else 0])
-            if (self.counter % 100)==0:
-                print(self.counter)
-        elif self.counter == 1500:
-            print('Close f')
-            self.f.close()
-        self.counter+=1
+        # if self.counter < 1500:
+        #     self.writer.writerow([self.counter, 'leftAngle', self.leftAngles[-1]])
+        #     self.writer.writerow([self.counter, 'rightAngle', self.rightAngles[-1]])
+        #     self.writer.writerow([self.counter, 'leftMagnitude', self.leftMagnitudes[-1]])
+        #     self.writer.writerow([self.counter, 'rightMagnitude', self.rightMagnitudes[-1]])
+        #     self.writer.writerow([self.counter, 'leftPeak', self.leftPeaks[-1]])
+        #     self.writer.writerow([self.counter, 'rightPeak', self.rightPeaks[-1]])
+        #     self.writer.writerow([self.counter, 'cross', 0.5 if self.crosses[-1] else 0])
+        #     if (self.counter % 100)==0:
+        #         print(self.counter)
+        # elif self.counter == 1500:
+        #     print('Close f')
+        #     self.f.close()
+        # self.counter+=1
 
         quota = None
         try:
