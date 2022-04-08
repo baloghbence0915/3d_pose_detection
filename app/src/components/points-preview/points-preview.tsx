@@ -132,8 +132,7 @@ export default function PointsPreview() {
         <>
             <div className="point-view" ref={selfRef as any} />
             <BodyAngleIndicator angle={points?.angle} />
-            <SpeedIndicator speed={(points?.speed as any)?.[0]} />
-            <SpeedIndicator speed={(points?.speed as any)?.[1]} asd={true} />
+            <SpeedIndicator speed={points?.speed} />
         </>
     );
 }

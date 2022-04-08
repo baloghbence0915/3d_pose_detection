@@ -23,10 +23,10 @@ export default function ConfigPanel({ mode }: ConfigPanelProps) {
     const isConfigMode = mode === 'config';
 
     return <Box className={`config-panel ${mode}`}>
-        {isConfigMode && <ConfigPanelAccordion title="Playback & recording">
+        {/* {isConfigMode && <ConfigPanelAccordion title="Playback & recording">
             <ReplayingPanel />
             <RecordingPanel />
-        </ConfigPanelAccordion>}
+        </ConfigPanelAccordion>} */}
         {isConfigMode && <ConfigPanelAccordion title="Debug settings">
             <LandmarksPanel />
             <LinesPanel />

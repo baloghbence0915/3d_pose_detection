@@ -21,8 +21,7 @@ export default function Navigation() {
                 padding: '0 4rem' }}>
                 <Tabs value={tabIndex} sx={{ width: '50%' }} onChange={handleChange}>
                     <Tab label="Config" />
-                    <Tab label="3D Playground" />
-                    <Tab label="VR Demo" />
+                    <Tab label="Playground" />
                 </Tabs>
                 <ConnectionControllPanel />
             </Box>
@@ -31,9 +30,6 @@ export default function Navigation() {
             </TabPanel>
             <TabPanel value={tabIndex} index={1}>
                 <Playground />
-            </TabPanel>
-            <TabPanel value={tabIndex} index={2}>
-                Item Three
             </TabPanel>
         </Box>
     );

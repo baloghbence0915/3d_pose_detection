@@ -4,6 +4,7 @@ import re
 from os.path import join
 from calculations.CalculationsModule import getBodyAngle, getDistanceOfPoint, getSpeed, linearFn, unwrapCoords
 from fileutils.FileUtilsModule import getAbsolutePath
+from pose.PoseLandmarksModule import drawLandmarks
 
 # Source: https://stackoverflow.com/a/47248339/11436145
 
@@ -64,6 +65,15 @@ def applyImageModifiers(frame, side, config, detector, undistortion):
         frame = rotateImage(frame, rot * 90)
 
     pose = detector.getPose(frame)
+
+    if config.get()["debug"]["show_landmarks"]:
+        drawLandmarks(frame, pose)
+
+    if config.get()["debug"]["show_vert_hor_line"]:
+        halfHeight = int(frame.shape[0]/2)
+        halfWidth = int(frame.shape[1]/2)
+        frame[:, halfWidth-1:halfWidth+1] = [0, 0, 255]
+        frame[halfHeight-1:halfHeight+1, :] = [0, 0, 255]
 
     return (frame, pose)
 
@@ -158,7 +168,7 @@ def getKeyPoints(frames, poses, config):
                 x += offset['x']
                 z += offset['z']
 
-            resp["points"][i] = {'x': 1-x, 'y': y, 'z': z}
+            resp["points"][i] = {'x': x, 'y': y, 'z': z}
 
     resp['angle'] = getBodyAngle(resp['points'])
     resp['speed'] = getSpeed(resp['points'])

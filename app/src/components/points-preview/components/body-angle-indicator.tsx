@@ -19,7 +19,6 @@ export default function BodyAngleIndicator({ angle }: PointsPreview) {
                     color: 'white',
                 }}>
                 Angle: {degree}°
-                Rad: {angle}
             </Box>
             <Box sx={{
                 width: '100px',

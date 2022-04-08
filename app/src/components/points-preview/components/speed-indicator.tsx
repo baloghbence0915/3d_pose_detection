@@ -5,12 +5,12 @@ interface SpeedIndicatorProps {
     asd?: boolean;
 }
 
-export default function SpeedIndicator({ speed = 0, asd }: SpeedIndicatorProps) {
+export default function SpeedIndicator({ speed = 0 }: SpeedIndicatorProps) {
     return (
         <Box sx={{
             position: 'fixed',
             top: '150px',
-            left: asd ? '32px' : '500px',
+            left: '32px',
             fontSize: '32px'
         }}>
             <Box

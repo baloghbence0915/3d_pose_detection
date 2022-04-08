@@ -149,9 +149,6 @@ if __name__ == '__main__':
             if frameLeft is None or frameRight is None:
                 continue
 
-            drawLandmarks(frameLeft, poseLeft)
-            drawLandmarks(frameRight, poseRight)
-
             if show:
                 cv2.imshow('left', frameLeft)
                 cv2.imshow('right', frameRight)
@@ -188,6 +185,10 @@ if __name__ == '__main__':
             if config is None:
                 return 'Mime type is not json or body is empty', 400
             config.set(newConfig)
+            stopProcesses()
+            startProcesses()
+            startMainThread()
+
             return jsonify(config.get())
 
     @flask.route('/api/recordings')
