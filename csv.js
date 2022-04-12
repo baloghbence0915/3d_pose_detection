@@ -76,8 +76,10 @@ const result = Array(leftMagnitude2.length).fill(0).reduce((p, c) => {
 
 fs.writeFileSync('f.csv',
     'id,label,value' +
-    writeData(leftMagnitude2, 'leftMagnitude2') +
-    writeData(rightMagnitude2, 'rigthMagnitude2') +
-    writeData(result, 'result') +
+    writeData(left1, 'left1') +
+    writeData(right1, 'right1') +
+    // writeData(leftMagnitude2, 'leftMagnitude2') +
+    // writeData(rightMagnitude2, 'rigthMagnitude2') +
+    // writeData(result, 'result') +
     '',
     'utf8')

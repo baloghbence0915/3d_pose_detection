@@ -1,29 +1,28 @@
-from math import tan, atan, degrees, radians, sin, acos, sqrt, pi
+from math import tan, atan, degrees, radians, sin, acos, sqrt, pi, cos
 
 from calculations.SpeedModule import Speed
 
 PI_PER_2 = pi / 2
 
-def getAlpha(x, phi):
-    m = 0.5 / tan(radians(phi / 2))
+def getSubAngleOfTriangular(a, gamma, x):
+    b = (a/2) / sin(radians(gamma)/2)
+    lambd = (180-gamma)/2
+    c = sqrt((b**2) + (x**2) - (2*b*x*cos(radians(lambd))))
+    fi = degrees(acos(((b**2)+(c**2)-(x**2))/(2*b*c)))
+    return fi
 
+def getAlpha(x, gamma):
     if x < 0.0 or x > 1.0:
         raise Exception('Wrong value for alpha')
-    elif x <= 0.5:
-        return ((180 - phi) / 2) + phi - ((phi / 2) - degrees(atan((0.5 - x) / m)))
-    elif x > 0.5:
-        return ((180 - phi) / 2) + phi - ((phi / 2) + degrees(atan((x - 0.5) / m)))
+
+    return getSubAngleOfTriangular(1, gamma, 1-x) + ((180-gamma)/2)
 
 
-def getBeta(x, phi):
-    m = 0.5 / tan(radians(phi / 2))
-
+def getBeta(x, gamma):
     if x < 0.0 or x > 1.0:
         raise Exception('Wrong value for beta')
-    elif x <= 0.5:
-        return ((180 - phi) / 2) + (phi / 2) - degrees(atan((0.5 - x) / m))
-    elif x > 0.5:
-        return ((180 - phi) / 2) + (phi / 2) + degrees(atan((x - 0.5) / m))
+
+    return getSubAngleOfTriangular(1, gamma, x) + ((180-gamma)/2)
 
 
 def __getDist(alpha, beta, span):
