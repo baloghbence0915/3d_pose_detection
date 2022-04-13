@@ -190,18 +190,18 @@ if __name__ == '__main__':
 
             return jsonify(config.get())
 
-    @flask.route('/api/recordings')
-    @cross_origin()
-    def recordings():
-        return jsonify(getRecordings())
+    # @flask.route('/api/recordings')
+    # @cross_origin()
+    # def recordings():
+    #     return jsonify(getRecordings())
 
-    @flask.route('/api/restart')
-    @cross_origin()
-    def restart():
-        stopProcesses()
-        startProcesses()
-        startMainThread()
-        return 'restarted', 200
+    # @flask.route('/api/restart')
+    # @cross_origin()
+    # def restart():
+    #     stopProcesses()
+    #     startProcesses()
+    #     startMainThread()
+    #     return 'restarted', 200
 
     @flask.route('/api/stream/frame/<side>', methods=['GET'])
     @cross_origin()

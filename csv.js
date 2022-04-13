@@ -75,11 +75,14 @@ const result = Array(leftMagnitude2.length).fill(0).reduce((p, c) => {
 }, [])
 
 fs.writeFileSync('f.csv',
-    'id,label,value' +
-    writeData(left1, 'left1') +
-    writeData(right1, 'right1') +
+    'frame,label,value' +
+    // writeData(left1, 'left1') +
+    // writeData(right1, 'right1') +
     // writeData(leftMagnitude2, 'leftMagnitude2') +
     // writeData(rightMagnitude2, 'rigthMagnitude2') +
-    // writeData(result, 'result') +
+    writeData(leftPeak3, 'leftPeak3') +
+    writeData(rightPeak3, 'rightPeak3') +
+    writeData(crosses3, 'crosses3') +
+    writeData(result, 'result') +
     '',
     'utf8')

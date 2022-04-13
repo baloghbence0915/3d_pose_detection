@@ -178,7 +178,7 @@ exports.getCrosses = function (der1, der2) {
         const curr2 = der2[i]
 
         if (isCrossing(prev1, prev2, curr1, curr2)) {
-            changing[changing.length - 1] = 0.2
+            changing[changing.length - 1] = 0.05
         }
     }
 
