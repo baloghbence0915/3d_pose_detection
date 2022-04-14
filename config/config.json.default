@@ -65,7 +65,6 @@
     "calculations": {
         "horizontal_angle": 43,
         "stereo_baseline": 0.1,
-        "stereo_scale": 1,
         "move_points_to_center": false,
         "align_ground": {
             "enabled": true,
@@ -81,13 +80,6 @@
             "enabled": true,
             "x": -0.5,
             "z": -0.8
-        }
-    },
-    "playback": {
-        "recoding": false,
-        "playing": {
-            "enabled": false,
-            "file": "camera_20220317174405762424"
         }
     }
 }

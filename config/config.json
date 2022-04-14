@@ -1,1 +1,85 @@
-{"calculations": {"align_ground": {"bias": 0.45, "enabled": true, "slope": -32}, "horizontal_angle": 40, "move_points_to_center": true, "normalize_height": {"bias": 0.1, "enabled": true, "slope": 45}, "offset": {"enabled": false, "x": -0.5, "z": -0.8}, "stereo_baseline": 0.1, "stereo_scale": 1}, "camera": {"channels": {"left": 0, "right": 1}, "mods": {"all": {"undistortion": {"D": [[-0.2551242447457564], [2.7237971869512685], [-20.616930920493793], [53.02511005789323]], "DIM": [640, 480], "K": [[641.5261881982101, 0, 319.5031693747807], [0, 640.2415227168956, 255.60588796480621], [0, 0, 1]], "enabled": false}}, "left": {"rot": 3}, "right": {"rot": 1}}, "resolution": [640, 480]}, "debug": {"show_landmarks": true, "show_points_per_side": false, "show_vert_hor_line": false}, "playback": {"playing": {"enabled": false, "file": "camera_20220310193401252522"}, "recoding": false}}
+{
+    "calculations": {
+        "align_ground": {
+            "bias": 0.45,
+            "enabled": true,
+            "slope": -0.6248693519093275
+        },
+        "horizontal_angle": 40,
+        "move_points_to_center": true,
+        "normalize_height": {
+            "bias": 0.1,
+            "enabled": true,
+            "slope": 1
+        },
+        "offset": {
+            "enabled": false,
+            "x": -0.5,
+            "z": -0.8
+        },
+        "stereo_baseline": 0.1
+    },
+    "camera": {
+        "channels": {
+            "left": 0,
+            "right": 1
+        },
+        "mods": {
+            "all": {
+                "undistortion": {
+                    "D": [
+                        [
+                            -0.2551242447457564
+                        ],
+                        [
+                            2.7237971869512685
+                        ],
+                        [
+                            -20.616930920493793
+                        ],
+                        [
+                            53.02511005789323
+                        ]
+                    ],
+                    "DIM": [
+                        640,
+                        480
+                    ],
+                    "K": [
+                        [
+                            641.5261881982101,
+                            0,
+                            319.5031693747807
+                        ],
+                        [
+                            0,
+                            640.2415227168956,
+                            255.60588796480621
+                        ],
+                        [
+                            0,
+                            0,
+                            1
+                        ]
+                    ],
+                    "enabled": true
+                }
+            },
+            "left": {
+                "rot": 3
+            },
+            "right": {
+                "rot": 1
+            }
+        },
+        "resolution": [
+            640,
+            480
+        ]
+    },
+    "debug": {
+        "show_landmarks": true,
+        "show_points_per_side": false,
+        "show_vert_hor_line": false
+    }
+}

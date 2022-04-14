@@ -8,13 +8,11 @@ export default function StereoPanel() {
     const { state, dispatch } = useStore();
     const [angle, setAngle] = useState('0');
     const [baseline, setBaseline] = useState('0');
-    const [scale, setScale] = useState('0');
 
     useEffect(() => {
-        const { horizontal_angle, stereo_baseline, stereo_scale } = state.config.calculations;
+        const { horizontal_angle, stereo_baseline } = state.config.calculations;
         setAngle(String(horizontal_angle));
         setBaseline(String(stereo_baseline));
-        setScale(String(stereo_scale));
     }, [state]);
 
     return <Box>
@@ -34,18 +32,9 @@ export default function StereoPanel() {
             fullWidth
             sx={{ marginBottom: '8px' }}
             onChange={(e) => setBaseline(e.target.value)} />
-        <TextField id="outlined-basic"
-            label="Stereo multiplier"
-            variant="outlined"
-            size="small"
-            value={scale}
-            fullWidth
-            sx={{ marginBottom: '8px' }}
-            onChange={(e) => setScale(e.target.value)} />
         <ApplyButton onClick={() => {
             dispatch(actions.setHorizontalAngle(parseFloat(angle)));
             dispatch(actions.setStereoBaseline(parseFloat(baseline)));
-            dispatch(actions.setStereoScale(parseFloat(scale)));
         }} />
     </Box>;
 }

@@ -1,0 +1,232 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "camera": {
+            "type": "object",
+            "properties": {
+                "resolution": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "channels": {
+                    "type": "object",
+                    "properties": {
+                        "left": {
+                            "type": "number"
+                        },
+                        "right": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "left",
+                        "right"
+                    ]
+                },
+                "mods": {
+                    "type": "object",
+                    "properties": {
+                        "left": {
+                            "type": "object",
+                            "properties": {
+                                "rot": {
+                                    "type": "number"
+                                }
+                            },
+                            "required": [
+                                "rot"
+                            ]
+                        },
+                        "right": {
+                            "type": "object",
+                            "properties": {
+                                "rot": {
+                                    "type": "number"
+                                }
+                            },
+                            "required": [
+                                "rot"
+                            ]
+                        },
+                        "all": {
+                            "type": "object",
+                            "properties": {
+                                "undistortion": {
+                                    "type": "object",
+                                    "properties": {
+                                        "enabled": {
+                                            "type": "boolean"
+                                        },
+                                        "DIM": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "K": {
+                                            "type": "array",
+                                            "items": [
+                                                {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "D": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "enabled",
+                                        "DIM",
+                                        "K",
+                                        "D"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "undistortion"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "left",
+                        "right",
+                        "all"
+                    ]
+                }
+            },
+            "required": [
+                "resolution",
+                "channels",
+                "mods"
+            ]
+        },
+        "debug": {
+            "type": "object",
+            "properties": {
+                "show_landmarks": {
+                    "type": "boolean"
+                },
+                "show_vert_hor_line": {
+                    "type": "boolean"
+                },
+                "show_points_per_side": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "show_landmarks",
+                "show_vert_hor_line",
+                "show_points_per_side"
+            ]
+        },
+        "calculations": {
+            "type": "object",
+            "properties": {
+                "horizontal_angle": {
+                    "type": "number"
+                },
+                "stereo_baseline": {
+                    "type": "number"
+                },
+                "move_points_to_center": {
+                    "type": "boolean"
+                },
+                "align_ground": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "slope": {
+                            "type": "number"
+                        },
+                        "bias": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "enabled",
+                        "slope",
+                        "bias"
+                    ]
+                },
+                "normalize_height": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "slope": {
+                            "type": "number"
+                        },
+                        "bias": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "enabled",
+                        "slope",
+                        "bias"
+                    ]
+                },
+                "offset": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "x": {
+                            "type": "number"
+                        },
+                        "z": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "enabled",
+                        "x",
+                        "z"
+                    ]
+                }
+            },
+            "required": [
+                "horizontal_angle",
+                "stereo_baseline",
+                "move_points_to_center",
+                "align_ground",
+                "normalize_height",
+                "offset"
+            ]
+        }
+    },
+    "required": [
+        "camera",
+        "debug",
+        "calculations"
+    ]
+}

@@ -84,7 +84,6 @@ def getKeyPoints(frames, poses, config):
     calculations = config.get()['calculations']
     stereo_baseline = calculations["stereo_baseline"]
     horizontal_angle = calculations["horizontal_angle"]
-    stereo_scale = calculations["stereo_scale"]
 
     move_points_to_center = calculations["move_points_to_center"]
     offset = calculations["offset"]
@@ -120,7 +119,7 @@ def getKeyPoints(frames, poses, config):
             leftX, _, rightX, _ = unwrapCoords(points, i)
             diffX += (leftX + rightX)/2
             diffZ += getDistanceOfPoint(leftX, rightX,
-                                        horizontal_angle, stereo_baseline, stereo_scale)
+                                        horizontal_angle, stereo_baseline)
         diffX /= 2
         diffZ /= 2
 
@@ -140,7 +139,7 @@ def getKeyPoints(frames, poses, config):
             x = (leftX+rightX)/2
             y = (leftY+rightY)/2
             z = getDistanceOfPoint(
-                leftX, rightX, horizontal_angle, stereo_baseline, stereo_scale)
+                leftX, rightX, horizontal_angle, stereo_baseline)
 
             #
             if align_ground['enabled']:

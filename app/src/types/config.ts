@@ -23,7 +23,6 @@ export interface Config {
     calculations: {
         horizontal_angle: number;
         stereo_baseline: number;
-        stereo_scale: number;
         move_points_to_center: boolean;
         align_ground: {
             enabled: boolean;
@@ -77,7 +76,6 @@ export const DEFAULT_CONFIG: Config = {
     calculations: {
         horizontal_angle: 0,
         stereo_baseline: 0,
-        stereo_scale: 0,
         move_points_to_center: false,
         align_ground: {
             enabled: false,

@@ -104,17 +104,17 @@ if __name__ == '__main__':
         global processLeft
         config = Config().get()
 
-        if config["playback"]["playing"]["enabled"]:
-            processPlayer = multiprocessing.Process(
-                target=capturePlayer, args=[getVideoPlayer, pipeLeftBegin], daemon=True)
-            processPlayer.start()
-        else:
-            now = datetime.now()
-            session = 'camera_{0}'.format(now.strftime('%Y%m%d%H%M%S%f'))
+        # if config["playback"]["playing"]["enabled"]:
+        #     processPlayer = multiprocessing.Process(
+        #         target=capturePlayer, args=[getVideoPlayer, pipeLeftBegin], daemon=True)
+        #     processPlayer.start()
+        # else:
+        now = datetime.now()
+        session = 'camera_{0}'.format(now.strftime('%Y%m%d%H%M%S%f'))
 
-            processLeft = multiprocessing.Process(
-                target=captureCamera, args=[getLeftCamera, getRightCamera, pipeLeftBegin, session], daemon=True)
-            processLeft.start()
+        processLeft = multiprocessing.Process(
+            target=captureCamera, args=[getLeftCamera, getRightCamera, pipeLeftBegin, session], daemon=True)
+        processLeft.start()
 
     def stopProcesses():
         global processLeft, processPlayer
@@ -128,16 +128,16 @@ if __name__ == '__main__':
         global frameLeft, frameRight, poseLeft, poseRight, processLeft, processPlayer
         print("Main thread started")
         config = Config().get()
-        isPlayback = config["playback"]["playing"]["enabled"]
+        # isPlayback = config["playback"]["playing"]["enabled"]
 
         show = True
         while True:
-            if isPlayback:
-                if not processPlayer.is_alive():
-                    break
-            else:
-                if not processLeft.is_alive():
-                    break
+            # if isPlayback:
+            #     if not processPlayer.is_alive():
+            #         break
+            # else:
+            if not processLeft.is_alive():
+                break
 
             if pipeLeftEnd.poll():
                 (frameLeft, poseLeft) = pipeLeftEnd.recv()
@@ -181,7 +181,7 @@ if __name__ == '__main__':
             return jsonify(config.get())
         elif request.method == 'POST':
             newConfig = request.json
-            if config is None:
+            if newConfig is None:
                 return 'Mime type is not json or body is empty', 400
             config.set(newConfig)
             stopProcesses()

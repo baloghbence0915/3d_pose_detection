@@ -177,17 +177,6 @@ export const appReducer: Reducer<State, Actions> = (state, action) => {
                     }
                 }
             };
-        case 'setStereoScale':
-            return {
-                ...state,
-                config: {
-                    ...state.config,
-                    calculations: {
-                        ...state.config.calculations,
-                        stereo_scale: action.payload
-                    }
-                }
-            };
         case 'toggleAlignGround':
             return {
                 ...state,

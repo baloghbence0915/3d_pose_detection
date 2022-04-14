@@ -33,13 +33,13 @@ def __getDist(alpha, beta, span):
     return sin(radians(alpha)) * ((span * sin(radians(beta))) / sin(radians(gamma)))
 
 
-def getDistanceOfPoint(a, b, angle, baseline, scale):
+def getDistanceOfPoint(a, b, angle, baseline):
     distance = 0
 
     try:
         alpha = getAlpha(a, angle)
         beta = getBeta(b, angle)
-        distance = __getDist(alpha, beta, baseline) * scale
+        distance = __getDist(alpha, beta, baseline)
     except:
         pass
 
@@ -47,7 +47,7 @@ def getDistanceOfPoint(a, b, angle, baseline, scale):
 
 
 def linearFn(x, slope, bias):
-    return (tan(radians(slope)) * x) + bias
+    return (slope * x) + bias
 
 
 def getAngle(p1, p2):
